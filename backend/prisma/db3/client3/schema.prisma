@@ -1,0 +1,35 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./client3"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_3")
+}
+
+model Account {
+  account_id  String   @id @unique
+  private_key Bytes    @unique
+  created_at  DateTime @default(now())
+
+  seed_id String?
+
+  secretSeedPhrase SecretSeedPhrase? @relation(fields: [seed_id], references: [seed_id])
+}
+
+model SecretSeedPhrase {
+  seed_id     String   @id @default(uuid())
+  user_id     String
+  seed_phrase Bytes
+  is_primary  Boolean  @default(false)
+  created_at  DateTime @default(now())
+
+  Accounts Account[]
+}

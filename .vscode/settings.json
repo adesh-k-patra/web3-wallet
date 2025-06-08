@@ -1,0 +1,7 @@
+{
+  "cSpell.words": ["blockhash", "Keypair", "lamports", "nacl", "solana"],
+  "cSpell.ignoreWords": [
+    "ABCDEFGHJKLMNPQRSTUVWXY",
+    "Zabcdefghijkmnopqrstuvwxyz"
+  ]
+}

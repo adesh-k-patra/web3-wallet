@@ -1,0 +1,38 @@
+const AWS = require("aws-sdk")
+require("dotenv").config({ path: `./.env` })
+
+const s3 = new AWS.S3({
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  },
+  region: "ap-south-1",
+})
+
+async function uploadTokenMetadataToS3(metadata) {
+  try {
+    if (!metadata || !metadata.name || !metadata.symbol) {
+      throw Error("Invalid metadata")
+    }
+
+    const fileName = `${metadata.name}-${metadata.symbol}-${
+      Math.random() * 100000
+    }-metadata.json`
+
+    const uploadParams = {
+      Bucket: process.env.AWS_TOKEN_METADATA_BUCKET_NAME,
+      Key: fileName,
+      Body: JSON.stringify(metadata),
+      ContentType: "application/json",
+    }
+
+    const { Location } = await s3.upload(uploadParams).promise() //Location is the uploaded url location
+
+    return [Location, null]
+  } catch (error) {
+    console.log(error)
+    return [null, error.message]
+  }
+}
+
+module.exports = uploadTokenMetadataToS3
